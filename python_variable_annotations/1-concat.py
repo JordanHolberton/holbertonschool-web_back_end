@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-# This line is a shebang that allows the script to be executed with the Python 3 interpreter.
+"""Module for string concatenation."""
+
 
 def concat(str1: str, str2: str) -> str:
     """
-    Concatenates two strings and returns the result.
+    Concatenate two strings and return the result.
 
-    Args:
-        str1 (str): The first string.
-        str2 (str): The second string.
+    Parameters:
+    str1 (str): The first string to concatenate.
+    str2 (str): The second string to concatenate.
 
     Returns:
-        str: The concatenation of the two strings.
+    str: The concatenated string formed by combining `str1` and `str2`.
     """
     return str1 + str2

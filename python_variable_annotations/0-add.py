@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-# This line is a shebang that allows the script to be executed with the Python 3 interpreter.
+"""type annotation for add function"""
+
 
 def add(a: float, b: float) -> float:
     """
-    Adds two floating-point numbers and returns their sum.
+    Add two floating-point numbers and return the result.
 
-    Args:
-        a (float): The first floating-point number.
-        b (float): The second floating-point number.
+    Parameters:
+    a (float): The first number to add.
+    b (float): The second number to add.
 
     Returns:
-        float: The sum of the two floating-point numbers.
+    float: The sum of `a` and `b`.
     """
     return a + b
