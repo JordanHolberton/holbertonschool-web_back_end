@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+"""insert a document in a collection"""
+
 def list_all(mongo_collection):
     """
     Lists all documents in a collection.
