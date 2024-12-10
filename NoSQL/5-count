@@ -1,0 +1,2 @@
+// command to count the number of documents in the collection school
+db.school.countDocuments();
