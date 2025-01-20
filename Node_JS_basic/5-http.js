@@ -6,7 +6,7 @@ const countStudents = require('./3-read_file_async');
 const path = process.argv[2];
 
 const app = http.createServer((req, res) => {
-  const parsedUrl = url.parse(req.url || '', true);
+  const parsedUrl = url.parse(req.url, true);
 
   if (parsedUrl.pathname === '/') {
     res.setHeader('Content-Type', 'text/plain');
@@ -19,8 +19,8 @@ const app = http.createServer((req, res) => {
     res.write('This is the list of our students\n');
 
     countStudents(path)
-      .then(() => {
-        res.end('Student list has been printed to the terminal.');
+      .then((output) => {
+        res.end(output);
       })
       .catch((err) => {
         res.end(err.message);
