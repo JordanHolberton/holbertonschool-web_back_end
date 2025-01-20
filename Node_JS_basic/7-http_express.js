@@ -1,58 +1,58 @@
 const express = require('express');
-const fs = require('fs');
+const fs = require('fs').promises;
 
 const app = express();
-
+const port = 1245;
 const databaseFilePath = process.argv[2];
 
-app.use((req, res, next) => {
-  res.setHeader('Content-Type', 'text/plain');
-  next();
-});
-
 app.get('/', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain');
   res.send('Hello Holberton School!');
 });
 
-app.get('/students', (req, res) => {
+app.get('/students', async (req, res) => {
+  res.setHeader('Content-Type', 'text/plain');
+
   if (!databaseFilePath) {
     res.status(500).send('Database file path is missing');
     return;
   }
 
-  fs.readFile(databaseFilePath, 'utf8', (err, data) => {
-    if (err) {
-      res.status(500).send('Unable to read the file');
-      return;
+  try {
+    const data = await fs.readFile(databaseFilePath, 'utf8');
+    const lines = data.trim().split('\n').filter((line) => line.trim() !== '');
+
+    if (lines.length <= 1) {
+      throw new Error('Cannot load the database');
     }
 
-    const lines = data.trim().split('\n').filter((line) => line.trim() !== '');
-    const students = {
-      total: 0,
-      cs: [],
-      swe: [],
-    };
+    const studentData = lines.slice(1);
+    const fields = {};
 
-    lines.forEach((line) => {
-      const [name, course] = line.split(',').map((s) => s.trim());
-      if (course === 'CS') {
-        students.cs.push(name);
-      } else if (course === 'SWE') {
-        students.swe.push(name);
+    studentData.forEach((line) => {
+      const [firstname, , , field] = line.split(',');
+
+      if (firstname && field) {
+        if (!fields[field]) {
+          fields[field] = [];
+        }
+        fields[field].push(firstname);
       }
-      students.total += 1;
     });
 
-    const csList = students.cs.join(', ');
-    const sweList = students.swe.join(', ');
+    let output = 'This is the list of our students\n';
+    for (const [field, students] of Object.entries(fields).sort()) {
+      output += `Number of students in ${field}: ${students.length}. List: ${students.join(', ')}\n`;
+    }
 
-    res.send('This is the list of our students\n'
-             + `Number of students: ${students.total}\n`
-             + `Number of students in CS: ${students.cs.length}. List: ${csList}\n`
-             + `Number of students in SWE: ${students.swe.length}. List: ${sweList}`);
-  });
+    res.send(output.trim());
+  } catch (err) {
+    res.status(500).send('Cannot load the database');
+  }
 });
 
-app.listen(1245);
+app.listen(port, () => {
+  console.log(`Server is listening on port ${port}`);
+});
 
 module.exports = app;
