@@ -1,4 +1,3 @@
-// filepath: /home/jordan/holbertonschool-web_back_end/Node_JS_basic/full_server/utils.js
 const fs = require('fs').promises;
 
 async function readDatabase(filePath) {
