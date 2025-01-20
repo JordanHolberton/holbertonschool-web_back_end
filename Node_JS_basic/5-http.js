@@ -1,36 +1,38 @@
 const http = require('http');
+const url = require('url');
 
-const args = process.argv.slice(2);
 const countStudents = require('./3-read_file_async');
 
-const DATABASE = args[0];
+const path = process.argv[2];
 
-const hostname = '127.0.0.1';
-const port = 1245;
+const app = http.createServer((req, res) => {
+  const parsedUrl = url.parse(req.url, true);
 
-const app = http.createServer(async (req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
+  if (parsedUrl.pathname === '/') {
+    res.setHeader('Content-Type', 'text/plain');
+    res.statusCode = 200;
+    res.end('Hello Holberton School!');
+  } else if (parsedUrl.pathname === '/students') {
+    res.setHeader('Content-Type', 'text/plain');
+    res.statusCode = 200;
 
-  const { url } = req;
-
-  if (url === '/') {
-    res.write('Hello Holberton School!');
-  } else if (url === '/students') {
     res.write('This is the list of our students\n');
-    try {
-      const students = await countStudents(DATABASE);
-      res.end(`${students.join('\n')}`);
-    } catch (error) {
-      res.end(error.message);
-    }
+
+    countStudents(path)
+      .then((output) => {
+        res.end(output);
+      })
+      .catch((err) => {
+        res.end(err.message);
+      });
+  } else {
+    res.statusCode = 404;
+    res.end('Not Found');
   }
-  res.statusCode = 404;
-  res.end();
 });
 
-app.listen(port, hostname, () => {
-  //   console.log(`Server running at http://${hostname}:${port}/`);
+app.listen(1245, () => {
+  console.log('Server is listening on port 1245');
 });
 
 module.exports = app;
