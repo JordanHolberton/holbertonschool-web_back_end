@@ -1,25 +1,21 @@
-// Configure l'encodage de stdin en 'utf8' pour interpréter l'entrée comme une chaîne de caractères
+// Set the encoding for the standard input to UTF-8
 process.stdin.setEncoding('utf8');
 
-// Affiche le message initial demandant le nom de l'utilisateur
-console.log('Welcome to Holberton School, what is your name?');
+// Prompt the user for their name
+process.stdout.write('Welcome to Holberton School, what is your name?\n');
 
-// Écoute les données d'entrée de stdin
-process.stdin.on('data', (data) => {
-  // Supprime les espaces blancs en début et fin de chaîne
-  const input = data.toString().trim();
-
-  // Affiche le nom de l'utilisateur
-  console.log(`Your name is: ${input}`);
-
-  // Affiche le message de fermeture
-  console.log('This important software is now closing');
-
-  // Termine le processus
-  process.exit();
+// Listen for data input from the user
+process.stdin.on('readable', () => {
+  // Read the input from the user
+  const name = process.stdin.read();
+  if (name) {
+    // Display the user's name
+    process.stdout.write(`Your name is: ${name}`);
+  }
 });
 
-// Écoute l'événement 'end' pour gérer le message de fermeture lorsque l'entrée se termine
+// Listen for the end of the input stream
 process.stdin.on('end', () => {
-  console.log('This important software is now closing');
+  // Inform the user that the software is closing
+  process.stdout.write('This important software is now closing\n');
 });
