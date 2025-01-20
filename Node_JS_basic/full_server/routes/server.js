@@ -1,6 +1,6 @@
 // filepath: /home/jordan/holbertonschool-web_back_end/Node_JS_basic/full_server/server.js
 const express = require('express');
-const router = require('./routes/index');
+const router = require('./index');
 
 const app = express();
 const port = 1245;
