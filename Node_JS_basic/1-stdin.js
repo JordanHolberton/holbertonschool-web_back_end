@@ -16,4 +16,7 @@ process.stdin.on('data', (data) => {
   console.log('This important software is now closing');
 
   // Supprime le processus.exit() pour permettre à l'événement 'end' d'être géré
+
+  process.stdin.end();
+  process.exit();
 });
