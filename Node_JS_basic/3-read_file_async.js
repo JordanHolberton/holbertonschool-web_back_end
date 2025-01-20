@@ -2,41 +2,52 @@ const fs = require('fs').promises;
 
 async function countStudents(path) {
   try {
-    // Read the file asynchronously
     const data = await fs.readFile(path, 'utf8');
-    // Split the data into lines and filter out empty lines
-    const lines = data.trim().split('\n').filter((line) => line.trim() !== '');
+    const lines = data.trim().split('\n');
 
-    // Ensure there is at least a header line
     if (lines.length <= 1) {
-      throw new Error('Cannot load the database');
+      throw new Error('No students found in the database');
     }
 
-    // Extract the student data (excluding the header)
-    const studentData = lines.slice(1);
-
-    // Create a map to count students by field
     const fields = {};
-    studentData.forEach((line) => {
-      const [firstname, , , field] = line.split(',');
+    const students = [];
+    lines.shift();
 
-      // Ignore invalid or incomplete lines
-      if (firstname && field) {
-        if (!fields[field]) {
-          fields[field] = [];
+    for (const line of lines) {
+      const trimmedLine = line.trim();
+
+      if (trimmedLine !== '') {
+        const student = trimmedLine.split(',');
+
+        if (student.length >= 4) {
+          const firstName = student[0];
+          const field = student[3];
+
+          students.push(firstName);
+
+          if (!fields[field]) {
+            fields[field] = {
+              count: 0,
+              names: [],
+            };
+          }
+
+          fields[field].count += 1;
+          fields[field].names.push(firstName);
         }
-        fields[field].push(firstname);
       }
-    });
-
-    // Calculate and log the total number of students
-    const totalStudents = Object.values(fields).reduce((acc, curr) => acc + curr.length, 0);
-    console.log(`Number of students: ${totalStudents}`);
-
-    // Log the number of students in each field and their names
-    for (const [field, students] of Object.entries(fields)) {
-      console.log(`Number of students in ${field}: ${students.length}. List: ${students.join(', ')}`);
     }
+
+    let output = `Number of students: ${students.length}\n`;
+
+    for (const field in fields) {
+      if (Object.hasOwn(fields, field)) {
+        const { count, names } = fields[field];
+        output += `Number of students in ${field}: ${count}. List: ${names.join(', ')}\n`;
+      }
+    }
+
+    return output.trim();
   } catch (err) {
     throw new Error('Cannot load the database');
   }
