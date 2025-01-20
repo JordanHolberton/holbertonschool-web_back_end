@@ -1,5 +1,6 @@
-import express from 'express';
-import fs from 'fs';
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const app = express();
 
 const databaseFilePath = process.argv[2];
@@ -27,11 +28,11 @@ app.get('/students', (req, res) => {
 
     const lines = data.trim().split('\n').filter(line => line.trim() !== '');
     const students = {
-    const students: { total: number, cs: string[], swe: string[] } = {
       total: 0,
       cs: [],
       swe: [],
     };
+
     lines.forEach(line => {
       const [name, course] = line.split(',').map(s => s.trim());
       if (course === 'CS') {
