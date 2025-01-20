@@ -1,4 +1,3 @@
-// filepath: /home/jordan/holbertonschool-web_back_end/Node_JS_basic/full_server/controllers/StudentsController.js
 const readDatabase = require('../routes/utils');
 
 class StudentsController {
